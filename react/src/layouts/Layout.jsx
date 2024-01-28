@@ -30,7 +30,7 @@ function Layout({ children }) {
 
         {/* Footer can be another Box or custom component */}
         <Box as="footer" bg="gray.800" color="white" p={4}>
-          © AuroraSoft
+          © LinkSprint
         </Box>
       </Flex>
     </Flex>
