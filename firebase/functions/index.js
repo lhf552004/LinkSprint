@@ -1,25 +1,29 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const crypto = require("crypto");
+const cors = require("cors")({ origin: true });
+
 admin.initializeApp();
 const firestore = admin.firestore();
 
 exports.shortenURL = functions.https.onRequest(async (request, response) => {
-  if (request.method !== "POST") {
-    return response.status(405).send("Method Not Allowed");
-  }
+  return cors(request, response, async () => {
+    if (request.method !== "POST") {
+      return response.status(405).send("Method Not Allowed");
+    }
 
-  const originalURL = request.body.originalURL;
-  const shortCode = generateShortCode(originalURL); // Implement this function to generate a short code
+    const originalURL = request.body.originalURL;
+    const shortCode = generateShortCode(originalURL); // Implement this function to generate a short code
 
-  await firestore.collection("urls").doc(shortCode).set({
-    ShortCode: shortCode,
-    OriginalURL: originalURL,
-    CreationDate: admin.firestore.Timestamp.now(),
-    AccessCount: 0,
-    // Add ExpirationDate if applicable
+    await firestore.collection("urls").doc(shortCode).set({
+      ShortCode: shortCode,
+      OriginalURL: originalURL,
+      CreationDate: admin.firestore.Timestamp.now(),
+      AccessCount: 0,
+      // Add ExpirationDate if applicable
+    });
+    response.send({ shortCode });
   });
-  response.send({ shortCode });
 });
 
 exports.redirect = functions.https.onRequest(async (request, response) => {

@@ -63,7 +63,7 @@ const SignupForm = () => {
       <Card width="500px">
         <Center>
           <Heading size="md" p={4}>
-            AuroraSoft Time Admin
+            Link Sprint
           </Heading>
         </Center>
         <form onSubmit={handleSubmit(onSubmit)}>

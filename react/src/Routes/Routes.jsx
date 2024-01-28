@@ -11,6 +11,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import HideIfNotAdmin from "../components/auth/HideIfNotAdmin";
 import SignupForm from "../components/auth/SignupForm";
 import UrlShortnerComponent from "../components/UrlShortnerComponent";
+import ShortenedUIComponent from "../components/ShortenedUIComponent";
 
 const routes = [
   {
@@ -40,9 +41,19 @@ const routes = [
       {
         path: "url-shortner",
         element: (
-          <ProtectedRoute>
-            <UrlShortnerComponent />
-          </ProtectedRoute>
+          // <ProtectedRoute>
+
+          // </ProtectedRoute>
+          <UrlShortnerComponent />
+        ), // Wrap protected routes with this
+      },
+      {
+        path: "shortened-link",
+        element: (
+          // <ProtectedRoute>
+
+          // </ProtectedRoute>
+          <ShortenedUIComponent />
         ), // Wrap protected routes with this
       },
       {

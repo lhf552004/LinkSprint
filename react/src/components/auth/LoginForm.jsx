@@ -28,7 +28,7 @@ const LoginForm = ({ onSubmit, error }) => {
       <Card width="500px">
         <Center>
           <Heading size="md" mb={4}>
-            AuroraSoft Time Admin
+            Link Sprint
           </Heading>
         </Center>
         <form onSubmit={handleSubmit(onSubmit)}>
