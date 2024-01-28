@@ -61,13 +61,14 @@ export default function WithSubnavigation() {
           />
         </Flex>
         <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-          <Image
-            src={logo} // Replace with the path to your image
-            alt="Logo" // Provide an appropriate alt text
-            textAlign={useBreakpointValue({ base: "center", md: "left" })}
-            // You can add more styling as required
-          />
-
+          <RouterLink to="/">
+            <Image
+              src={logo} // Replace with the path to your image
+              alt="Logo" // Provide an appropriate alt text
+              textAlign={useBreakpointValue({ base: "center", md: "left" })}
+              // You can add more styling as required
+            />
+          </RouterLink>
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
             <DesktopNav />
           </Flex>
