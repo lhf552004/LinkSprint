@@ -6,7 +6,7 @@ const SignupButton = () => {
       size="sm"
       rounded="md"
       // color={["primary", "primary", "brand.light", "brand.light"]}
-      color="white"
+      color="black"
       bg={["brand_light", "brand_light", "brand.strong", "brand.strong"]}
       _hover={{
         bg: ["brand.100", "brand.100", "brand.600", "brand.600"],

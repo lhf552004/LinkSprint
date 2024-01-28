@@ -3,7 +3,7 @@ import {
   Flex,
   Text,
   IconButton,
-  Button,
+  Link,
   Stack,
   Collapse,
   Image,
@@ -15,7 +15,7 @@ import {
   useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
-
+import { Link as RouterLink } from "react-router-dom";
 import {
   HamburgerIcon,
   CloseIcon,
@@ -23,10 +23,16 @@ import {
   ChevronRightIcon,
 } from "@chakra-ui/icons";
 import logo from "../assets/logo.ico";
+import { useSigninCheck } from "reactfire";
+import LoginButton from "../components/auth/LoginButton";
+import SignupButton from "../components/auth/SignupButton";
+import LogoutButton from "../components/auth/LogoutButton";
 
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure();
-
+  const { status, data: signInCheckResult } = useSigninCheck();
+  const isSignedIn = signInCheckResult && signInCheckResult.signedIn;
+  console.log(isSignedIn);
   return (
     <Box>
       <Flex
@@ -73,29 +79,35 @@ export default function WithSubnavigation() {
           direction={"row"}
           spacing={6}
         >
-          <Button
-            as={"a"}
-            fontSize={"sm"}
-            fontWeight={400}
-            variant={"link"}
-            href={"login"}
-          >
-            Sign In
-          </Button>
-          <Button
-            as={"a"}
-            display={{ base: "none", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"pink.400"}
-            href={"signup"}
-            _hover={{
-              bg: "pink.300",
-            }}
-          >
-            Sign Up
-          </Button>
+          {isSignedIn === true ? (
+            <Link
+              as={RouterLink}
+              to="/"
+              color="black"
+              _hover={{ textDecoration: "underline" }}
+            >
+              <LogoutButton />
+            </Link>
+          ) : (
+            <Link
+              as={RouterLink}
+              to="/login"
+              color="black"
+              _hover={{ textDecoration: "underline" }}
+            >
+              <LoginButton />
+            </Link>
+          )}
+          {isSignedIn === false && (
+            <Link
+              as={RouterLink}
+              to="/signup"
+              color="black"
+              _hover={{ textDecoration: "underline" }}
+            >
+              <SignupButton />
+            </Link>
+          )}
         </Stack>
       </Flex>
 
@@ -271,33 +283,22 @@ const NAV_ITEMS = [
         href: "url-shortner",
       },
       {
-        label: "New & Noteworthy",
-        subLabel: "Up-and-coming Designers",
-        href: "#",
+        label: "QR Codes",
+        subLabel: "Dynamic solutions to fit every business need",
+        href: "qr-codes",
       },
     ],
   },
   {
-    label: "Find Work",
-    children: [
-      {
-        label: "Job Board",
-        subLabel: "Find your dream design job",
-        href: "#",
-      },
-      {
-        label: "Freelance Projects",
-        subLabel: "An exclusive list for contract work",
-        href: "#",
-      },
-    ],
+    label: "Pricing",
+    href: "pricing",
   },
   {
-    label: "Learn Design",
-    href: "#",
+    label: "Resources",
+    href: "resources",
   },
   {
-    label: "Hire Designers",
-    href: "#",
+    label: "About",
+    href: "about",
   },
 ];

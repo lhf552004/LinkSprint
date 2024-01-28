@@ -12,6 +12,10 @@ import HideIfNotAdmin from "../components/auth/HideIfNotAdmin";
 import SignupForm from "../components/auth/SignupForm";
 import UrlShortnerComponent from "../components/UrlShortnerComponent";
 import ShortenedUIComponent from "../components/ShortenedUIComponent";
+import PricingComponent from "../components/PricingComponent";
+import QrCodesComponent from "../components/QrCodesComponent";
+import ResourcesComponent from "../components/ResourcesComponent";
+import HomeComponent from "../components/HomeComponent";
 
 const routes = [
   {
@@ -28,7 +32,7 @@ const routes = [
     children: [
       {
         path: "/",
-        element: <About />,
+        element: <HomeComponent />,
       },
       {
         path: "computers",
@@ -41,20 +45,38 @@ const routes = [
       {
         path: "url-shortner",
         element: (
-          // <ProtectedRoute>
-
-          // </ProtectedRoute>
-          <UrlShortnerComponent />
+          <ProtectedRoute>
+            <UrlShortnerComponent />
+          </ProtectedRoute>
         ), // Wrap protected routes with this
       },
       {
         path: "shortened-link",
         element: (
-          // <ProtectedRoute>
-
-          // </ProtectedRoute>
-          <ShortenedUIComponent />
+          <ProtectedRoute>
+            <ShortenedUIComponent />
+          </ProtectedRoute>
         ), // Wrap protected routes with this
+      },
+      {
+        path: "qr-codes",
+        element: (
+          <ProtectedRoute>
+            <QrCodesComponent />
+          </ProtectedRoute>
+        ), // Wrap protected routes with this
+      },
+      {
+        path: "pricing",
+        element: <PricingComponent />, // Wrap protected routes with this
+      },
+      {
+        path: "resources",
+        element: <ResourcesComponent />, // Wrap protected routes with this
+      },
+      {
+        path: "about",
+        element: <About />, // Wrap protected routes with this
       },
       {
         path: "admin",

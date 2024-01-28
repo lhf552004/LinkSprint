@@ -5,6 +5,7 @@ const cors = require("cors")({ origin: true });
 
 admin.initializeApp();
 const firestore = admin.firestore();
+const db = admin.firestore();
 
 exports.shortenURL = functions.https.onRequest(async (request, response) => {
   return cors(request, response, async () => {
@@ -63,3 +64,142 @@ function generateShortCode(originalURL) {
   const length = 6; // Adjust length as needed
   return hash.replace(/\+/g, "-").replace(/\//g, "_").substring(0, length);
 }
+module.exports.addNewUser = functions.https.onCall(async (data, context) => {
+  // if (!context.auth.token.isAdmin) {
+  //   throw new functions.https.HttpsError("permission-denied");
+  // }
+
+  const {
+    displayName,
+    email,
+    phone: phoneNumber,
+    organization,
+    notes,
+    isAdmin,
+    password,
+  } = data;
+
+  if (!typeof displayName === "string") {
+    return {
+      status: "error",
+      message: "Please provide a valid display name",
+    };
+  }
+
+  if (!typeof email === "string") {
+    return {
+      status: "error",
+      message: "Please provide a valid email",
+    };
+  }
+
+  return admin
+    .auth()
+    .createUser({
+      email,
+      displayName,
+      password,
+    })
+    .then(async (userRecord) => {
+      const uid = userRecord.uid;
+      console.log("uid: " + uid);
+      const userDoc = {
+        email,
+        displayName,
+        phoneNumber,
+        notes,
+        organization,
+      };
+
+      const claims = {};
+
+      if (isAdmin) {
+        userDoc["isAdmin"] = true;
+        claims["isAdmin"] = true;
+      }
+
+      console.log("start to create doc");
+
+      await db.doc(`/users/${uid}`).set(userDoc);
+
+      await admin.auth().setCustomUserClaims(uid, claims);
+
+      return {
+        status: "success",
+        message: `${displayName} created`,
+      };
+    })
+    .catch((error) => {
+      console.log("Error creating new user:", error);
+    });
+});
+
+module.exports.updateUser = functions.firestore
+  .document("/users/{user}")
+  .onUpdate(async (snapshot, context) => {
+    const { user } = context.params;
+    const after = snapshot.after.data();
+
+    if (after.isAdmin === true) {
+      claims["isAdmin"] = true;
+    }
+
+    return admin.auth().setCustomUserClaims(user, claims);
+
+    // update user claims if isAdmin has changed.
+  });
+
+module.exports.disableUser = functions.https.onCall(async (data, context) => {
+  const { uid, status } = data;
+
+  // Admin can disable, you cannot disable yourself :-)
+  if (!context.auth.token.isAdmin || context.auth.token.uid === uid) {
+    throw new functions.https.HttpsError("permission-denied");
+  }
+
+  return admin
+    .auth()
+    .updateUser(uid, {
+      disabled: !status,
+    })
+    .then(async (userRecord) => {
+      await db.doc(`users/${uid}`).update({ disabled: !status });
+      return {
+        status: "success",
+        message: "User updated",
+        payload: userRecord,
+      };
+    })
+    .catch((err) => {
+      console.log(err);
+      return {
+        status: "warning",
+        message: "Could not update user",
+      };
+    });
+});
+
+module.exports.deleteUser = functions.https.onCall(async (data, context) => {
+  const { uid } = data;
+
+  if (!context.auth.token.isAdmin || context.auth.token.uid === uid) {
+    throw new functions.https.HttpsError("permission-denied");
+  }
+
+  return admin
+    .auth()
+    .deleteUser(uid)
+    .then(async (res) => {
+      await db.doc(`users/${uid}`).delete();
+      return {
+        status: "success",
+        message: "User deleted",
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "error",
+        message: "Could not delete user",
+      };
+    });
+});
