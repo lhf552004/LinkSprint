@@ -20,6 +20,5 @@ jobs:
 
       - name: Build and Deploy
         run: |
-          cd firebase  # navigate to your backend directory
           npm install
           firebase deploy --only functions --token ${{ secrets.FIREBASE_TOKEN }}
