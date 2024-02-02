@@ -18,8 +18,6 @@ jobs:
       - name: Install Dependencies
         run: yarn install && yarn build
 
-      - name: Build
-
       - name: Deploy to Cloudflare
         uses: cloudflare/wrangler-action@v3
         with:
