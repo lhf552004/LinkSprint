@@ -3,7 +3,10 @@ name: Deploy Backend to Firebase
 on:
   push:
     branches:
-      - main # or your default branch
+      - main
+    paths:
+      - 'firebase/**'
+  workflow_dispatch:
 
 jobs:
   deploy:
