@@ -23,3 +23,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: './react/build'  # Adjust if your build output is in a different directory
+          entryPoint: 'index.js'
