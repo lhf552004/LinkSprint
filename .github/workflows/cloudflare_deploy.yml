@@ -1,27 +1,26 @@
-name: Deploy Frontend to Cloudflare
-
 on:
   push:
     branches:
-      - main # or your default branch
+      - main
+    paths:
+      - 'react/**'
+  workflow_dispatch:
 
 jobs:
-  build_and_deploy:
+  deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: './react'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install Dependencies
-        run: yarn install && yarn build
+        run: yarn install
 
-      - name: Deploy to Cloudflare
-        uses: cloudflare/wrangler-action@v3
+      - name: Build
+        run: yarn build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: './react/dist'  # Adjust if your build output is in a different directory
-          entryPoint: 'index.js'
+          command: pages publish ./react/dist --project-name=your-project-name --branch main
